@@ -59,10 +59,30 @@ module.exports = function (app) {
 
     app.route('/form')
         .get(authRedirLogin, (req, res) => {
-
+            res.render('matchSelect', {title: 'Select Match #', user: req.session.username});
         })
         .post((req, res) => {
-
+            var matchNum = req.body.matchNum;
+            var teams = [];
+            var json = jsonParser('../matches.json');
+            var foundMatch = false;
+            for(var i=0; i<json.matches.length; i++) {
+                if(matchNum == json.matches[i].matchNum) {
+                    teams.push(json.matches[i].red1,
+                        json.matches[i].red2,
+                        json.matches[i].red3,
+                        json.matches[i].blue1,
+                        json.matches[i].blue2,
+                        json.matches[i].blue3);
+                    foundMatch = true;
+                    break;
+                }
+            }
+            if(!foundMatch) {
+                res.redirect('/form');
+            } else {
+                res.render('form', {title: 'Match '+matchNum, teams: teams});
+            }
         });
 
     //Route for logout
