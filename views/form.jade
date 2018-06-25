@@ -1,2 +1,23 @@
 include header
-p Red 1: #{teams[0]}
+form(action="/submitForm",method="post",id="form")
+    input(type="hidden",name="match_num",id="match_num",value="#{matchNum}")
+    div.card
+        div.card-block
+            select(name="team_num",id="team_num",required)
+                option.btn-group-vertical(value="#{teams[0]}") Red 1: #{teams[0]}
+                option.btn-group-vertical(value="#{teams[1]}") Red 2: #{teams[1]}
+                option.btn-group-vertical(value="#{teams[2]}") Red 3: #{teams[2]}
+                option.btn-group-vertical(value="#{teams[3]}") Blue 1: #{teams[3]}
+                option.btn-group-vertical(value="#{teams[4]}") Blue 2: #{teams[4]}
+                option.btn-group-vertical(value="#{teams[5]}") Blue 3: #{teams[5]}
+            br
+        - for (var x=0; x<config.fields.length; x++)
+            div.card-block
+                p #{config.fields[x].label}
+                if config.fields[x].inputType == "text"
+                    textarea(name="#{config.fields[x].id}",id="#{config.fields[x].id}",rows="8",cols="40",maxlength="1000",oninput="countCommentChars()")
+                else
+                    input(type="number",name="#{config.fields[x].id}",id="#{config.fields[x].id}",value="0",min="0",max="10")
+
+        div.card-block
+            input.btn.btn-success(style="float: right",type="sumbit",id="submitBtn",onClick="this.form.submit()",value="Done")

@@ -1,0 +1,14 @@
+{
+  "fields":[
+    {
+      "id":"num_balls",
+      "label":"Number of balls",
+      "inputType":"number"
+    },
+    {
+      "id":"comments",
+      "label":"Comments",
+      "inputType":"text"
+    }
+  ]
+}

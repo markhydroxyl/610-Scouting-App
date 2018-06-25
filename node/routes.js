@@ -1,4 +1,5 @@
 var jsonParser = require('../util/stringToJson.js');
+var fs = require('fs');
 
 module.exports = function (app) {
     //Checks if a session exists: if so, redirect to dashboard; else, continue
@@ -81,9 +82,28 @@ module.exports = function (app) {
             if(!foundMatch) {
                 res.redirect('/form');
             } else {
-                res.render('form', {title: 'Match '+matchNum, teams: teams});
+                var config = jsonParser('../formConfig.json');
+                res.render('form', {title: 'Match '+matchNum, matchNum: matchNum, user: req.session.username, teams: teams, config: config});
             }
         });
+
+    app.post('/submitForm', (req, res) => {
+        var json = JSON.stringify(jsonParser('../matches.json'));
+        var form = ',\n{"matchNum":"'+req.body.match_num+'","teamNum":"'+req.body.team_num+'"}';
+        var config = jsonParser('../formConfig.json');
+        for (var i=0; i<config.fields.length; i++) {
+            form = form.substring(0,form.length-1)+'"'+config.fields[i].id+'":"'+req.body[config.fields[i].id]+'"'+'}';
+        }
+        json = json.substring(0,json.length-2)+form+"]}";
+        console.log(json);
+        fs.writeFile("../matches.json",json,function(err) {
+            if(err) {
+                return console.log(err);
+            }
+        });
+
+        res.redirect('/dashboard');
+    });
 
     //Route for logout
     app.get('/logout', (req, res) => {
